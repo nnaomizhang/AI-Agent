@@ -122,7 +122,7 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
 st.subheader("Step 2: Wikipedia Retrieval")
 
 if "industry" not in st.session_state:
-    st.warning("Incomplete Industry Validation")
+    st.warning("Incomplete Step 1: Industry Validation")
 else:
     if st.button("Retrieve Relevant Wikipedia Pages"):
         with st.spinner("Searching Wikipedia..."):
@@ -141,3 +141,57 @@ else:
                 st.warning(f"Warning: Only {len(docs)}/5 relevant pages found. The following report may be less comprehensive.")
         else:
             st.error("No relevant Wikipedia pages were found. Please try a different industry.")
+            
+# 3 Industry Report Generation
+
+def generate_industry_report(industry: str, docs: list, llm) -> str:
+    context = "\n\n".join([
+        f"Source: {doc.metadata.get('title', 'Unknown')}\n{doc.page_content}"
+        for doc in docs
+    ])
+    
+    messages = [
+        SystemMessage(content="""You are a professional market research analyst. 
+        Generate a concise but COMPLETE industry report based ONLY on the provided Wikipedia sources.
+        The report must:
+        - Be a full, complete report — do not cut off mid-sentence or leave sections incomplete
+        - Be STRICTLY under 500 words — plan your response to fit within this limit
+        - Be structured with clear sections: Overview, Key Players, Market Trends, Challenges
+        - Be written for a business analyst audience
+        - Only use information from the provided sources
+        - Budget your words: ~100 words per section to stay under 500 words total"""),
+        HumanMessage(content=f"""Industry: {industry}
+        
+Wikipedia Sources:
+{context}
+
+Write a complete, professional industry report under 500 words.""")
+    ]
+    
+    response = llm.invoke(messages).content.strip()
+    return response
+
+# Streamlit
+st.subheader("Step 3: Industry Report")
+
+if "docs" not in st.session_state:
+    st.warning("Incomplete Step 2: Wikipedia Retrieval ")
+else:
+    if st.button("Generate Industry Report"):
+        with st.spinner("Generating report..."):
+            report = generate_industry_report(
+                st.session_state["industry"],
+                st.session_state["docs"],
+                llm
+            )
+            st.session_state["report"] = report
+
+    if "report" in st.session_state:
+        st.markdown(st.session_state["report"])
+        
+        # Word count check
+        word_count = len(st.session_state["report"].split())
+        if word_count <= 500:
+            st.caption(f"Word count: {word_count}/500")
+        else:
+            st.warning(f"Report exceeds 500 words ({word_count} words).")
