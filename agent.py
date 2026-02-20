@@ -2,13 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
-import anthropic
-import wikipedia
-import re
-import json
-import os
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_community.retrievers import WikipediaRetriever
 
 # Page Layout
 st.set_page_config(page_title="Market Research Assistant")
