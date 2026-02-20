@@ -37,7 +37,7 @@ llm = ChatOpenAI(
     api_key=api_key
 ) if api_key else None
 
-# 1. Industry Validation
+# 1 Industry Validation
 def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
     text = user_input.strip()
     if llm is None:
@@ -90,6 +90,31 @@ if st.button("Industry Validation"):
     
 # 2 Wikipedia Retrieval
 
+def retrieve_wikipedia_pages(industry: str) -> list:
+    retriever = WikipediaRetriever(
+        top_k_results=5,        # return 5 most relevant pages
+        doc_content_chars_max=5000  # limit content per page
+    )
+    docs = retriever.invoke(industry)
+    return docs
+
+# Streamlit
+st.subheader("Step 2: Wikipedia Retrieval")
+
+if "industry" not in st.session_state:
+    st.warning("Please complete Step 1 first.")
+else:
+    if st.button("Retrieve Wikipedia Pages"):
+        with st.spinner("Searching Wikipedia..."):
+            docs = retrieve_wikipedia_pages(st.session_state["industry"])
+            st.session_state["docs"] = docs
+
+        st.success(f"Found {len(docs)} relevant Wikipedia pages:")
+        
+        for i, doc in enumerate(docs, 1):
+            title = doc.metadata.get("title", "Unknown")
+            url = doc.metadata.get("source", "No URL available")
+            st.markdown(f"**{i}. [{title}]({url})**")
 
 
 # 3 Generate Report
