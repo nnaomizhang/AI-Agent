@@ -118,4 +118,27 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
     
     return relevant_docs
 
-# 3 Generate Report
+# Streamlit
+st.subheader("Step 2: Wikipedia Retrieval")
+
+
+if "industry" not in st.session_state:
+   st.warning("Industry validation is incomplete!")
+else:
+   if st.button("Retrieve Relevant Wikipedia Pages"):
+       with st.spinner("Searching Wikipedia..."):
+           docs = retrieve_wikipedia_pages(st.session_state["industry"])
+           st.session_state["docs"] = docs
+          
+   if docs:
+       st.success(f"Found {len(docs)} relevant Wikipedia pages:")
+       for i, doc in enumerate(docs, 1):
+           title = doc.metadata.get("title", "Unknown")
+           url = doc.metadata.get("source", "No URL available")
+           st.markdown(f"**{i}. [{title}]({url})**")
+          
+    else:
+           st.error("No Wikipedia pages were found. Please try a different industry.")
+
+
+
