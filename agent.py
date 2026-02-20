@@ -186,7 +186,7 @@ else:
             )
             st.session_state["report"] = report
 
-    if "report" in st.session_state:
+if "report" in st.session_state:
     report = st.session_state["report"]
     
     # Word count
