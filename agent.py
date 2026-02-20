@@ -187,30 +187,11 @@ else:
             st.session_state["report"] = report
 
 if "report" in st.session_state:
-    report = st.session_state["report"]
-    
-    # Word count
-    word_count = len(report.split())
-    st.caption(f"Word count: {word_count}/500")
-    
-    # Styled report container
-    st.markdown(f"""
-    <div style="
-        background-color: #f8f9fa;
-        padding: 25px;
-        border-radius: 10px;
-        border-left: 5px solid #0066cc;
-        font-family: Georgia, serif;
-        line-height: 1.8;
-    ">
-    {report.replace(chr(10), '<br>')}
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Download button
-    st.download_button(
-        label="Download Report",
-        data=report,
-        file_name=f"{st.session_state['industry']}_market_report.txt",
-        mime="text/plain"
-    )
+       st.markdown(st.session_state["report"])
+      
+       # Word count check
+       word_count = len(st.session_state["report"].split())
+       if word_count <= 500:
+           st.caption(f"Word count: {word_count}/500")
+       else:
+           st.warning(f"Report exceeds 500 words ({word_count} words).")
