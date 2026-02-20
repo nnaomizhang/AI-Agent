@@ -138,6 +138,6 @@ else:
                 url = doc.metadata.get("source", "No URL available")
                 st.markdown(f"**{i}. [{title}]({url})**")
             if len(docs) < 5:
-                st.warning(f"Only {len(docs)} relevant pages were found out of 5. The report may be less comprehensive.")
+                st.warning(f"Warning: Only {len(docs)}/5 relevant pages found. The following report may be less comprehensive.")
         else:
             st.error("No relevant Wikipedia pages were found. Please try a different industry.")
