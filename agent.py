@@ -84,8 +84,8 @@ if st.button("Industry Validation"):
 
 def retrieve_wikipedia_pages(industry: str, llm) -> list:
     retriever = WikipediaRetriever(
-        top_k_results=10,       # fetch more initially so we have room to filter
-        doc_content_chars_max=5000
+        top_k_results=10,       # Giving the filter enough pages to work with
+        doc_content_chars_max=10000
     )
     docs = retriever.invoke(industry)
     
