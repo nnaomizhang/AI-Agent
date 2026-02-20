@@ -18,13 +18,10 @@ st.title("Market Research Assistant")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
-st.sidebar.divider() 
 
 # API Key
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
-
 temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2)
-
 model = st.sidebar.selectbox(
     "Model",
     ["gpt-4o-mini", "gpt-4o"]
@@ -188,10 +185,7 @@ else:
 
 if "report" in st.session_state:
     st.markdown(st.session_state["report"])
-    st.markdown(f"<h1 style='font-size: 28px;'>{title}</h1>", unsafe_allow_html=True)
-    st.markdown(body)
       
-       # Word count check
     word_count = len(st.session_state["report"].split())
     if word_count <= 500:
            st.caption(f"Word count: {word_count}/500")
