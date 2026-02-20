@@ -15,9 +15,13 @@ st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
 # Sidebar Settings
+st.sidebar.header("Settings")
+
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
     api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="password")
+
+temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2)
 
 model = st.sidebar.selectbox(
     "Model",
@@ -33,6 +37,8 @@ llm = ChatOpenAI(
 # 1 Validate the Industry
 def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
     text = user_input.strip()
+    if llm is None:
+        return False, "", "Missing OpenAI API key."
     if not text:
         return False, "", "Please enter an industry before continuing."
     
