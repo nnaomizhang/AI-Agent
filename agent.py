@@ -13,8 +13,8 @@ st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
 # Initialise client
-api_key = st.sidebar.text_input("Please enter your Anthropic API key", type="password")
-client = anthropic.Anthropic(api_key=api_key) if api_key else None
+api_key = st.sidebar.text_input("Please enter your OpenAI API key", type = 'password')
+st.sidebar.write(api_key)
 
 # 1 Validate the Industry
 def validate_industry(user_input: str) -> tuple[bool, str, str]:
