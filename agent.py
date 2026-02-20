@@ -127,7 +127,7 @@ if "industry" not in st.session_state:
 else:
    if st.button("Retrieve Relevant Wikipedia Pages"):
        with st.spinner("Searching Wikipedia..."):
-           docs = retrieve_wikipedia_pages(st.session_state["industry"])
+           docs = retrieve_wikipedia_pages(st.session_state["industry"], llm)
            st.session_state["docs"] = docs
           
    if docs:
