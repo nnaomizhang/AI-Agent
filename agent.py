@@ -12,11 +12,12 @@ import os
 st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
-# Initialise client
-api_key = st.secrets.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
-if not api_key:
-    api_key = st.sidebar.text_input("Please enter your Anthropic API key", type="password")
-client = anthropic.Anthropic(api_key=api_key) if api_key else None
+# Sidebar for settings
+st.sidebar.header("Chatbot Settings")
+temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
+model = st.sidebar.selectbox("Model", ["gpt-4", "claude-3"])
+api_key = st.sidebar.text_input("Please enter your Anthropic API key", type = 'password')
+st.sidebar.write(api_key)
 
 # 1 Validate the Industry
 def validate_industry(user_input: str) -> tuple[bool, str, str]:
