@@ -138,7 +138,7 @@ else:
            st.markdown(f"**{i}. [{title}]({url})**")
           
     else:
-           st.error("No Wikipedia pages were found. Please try a different industry.")
+        st.error("No Wikipedia pages were found. Please try a different industry.")
 
 
 
