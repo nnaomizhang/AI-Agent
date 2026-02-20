@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
+import anthropic
+import wikipedia
+import re
 
 # Page Layout
 st.set_page_config(page_title="Market Research Assistant")
