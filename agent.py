@@ -1,10 +1,4 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-from sklearn.linear_model import LinearRegression
-import wikipedia
-import re
-import json
 import os
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -15,6 +9,7 @@ retriever = WikipediaRetriever()
 # Page Layout
 st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
+st.caption("This report is based on Wikipedia sources and should be used for preliminary research only")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
@@ -24,7 +19,7 @@ api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2)
 model = st.sidebar.selectbox(
     "Model",
-    ["gpt-4o-mini", "gpt-4o"]
+    ["gpt-4o-mini", "gpt-4o"] # mini for development, gpt-4o for performance evaluation
 )
 
 if not api_key:
@@ -42,10 +37,8 @@ def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
     if llm is None:
         return False, "", "Missing OpenAI API key"
     if not text:
-        return False, "", "Please enter an industry before continuing"
+        return False, "", "Please provide a valid industry to proceed"
     
-    if not text:
-        return False, "", "Please enter an industry before continuing"
     
     # Validating with LLM
     messages = [
@@ -81,6 +74,7 @@ if st.button("Industry Validation"):
     if is_valid:
         st.session_state["industry"] = industry_name
         st.success(message)
+
     
     else:
         st.warning(message)
@@ -184,9 +178,17 @@ else:
 
 if "report" in st.session_state:
     st.markdown(st.session_state["report"])
+    
+    st.markdown(report)
       
     word_count = len(st.session_state["report"].split())
     if word_count <= 500:
            st.caption(f"Word count: {word_count}/500")
     else:
            st.warning(f"Report exceeds 500 words ({word_count} words).")
+           
+ st.download_button(
+        label="Download Report",
+        data=report,
+        file_name=f"{st.session_state['industry']}_market_report.txt",
+        mime="text/plain"
