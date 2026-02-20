@@ -13,7 +13,7 @@ st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
 # Initialise client
-api_key = st.secrets.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
+api_key = st.sidebar.text_input("Please enter your Anthropic API key", type="password")
 client = anthropic.Anthropic(api_key=api_key) if api_key else None
 
 # 1 Validate the Industry
