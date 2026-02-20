@@ -136,9 +136,5 @@ else:
            title = doc.metadata.get("title", "Unknown")
            url = doc.metadata.get("source", "No URL available")
            st.markdown(f"**{i}. [{title}]({url})**")
-          
-else:
-    st.error("No Wikipedia pages were found. Please try a different industry.")
-
 
 
