@@ -185,7 +185,7 @@ if "report" in st.session_state:
     else:
            st.warning(f"Report exceeds 500 words ({word_count} words).")
 
-st.download_button(
+    st.download_button(
         label="Download Report",
         data=report,
         file_name=f"{st.session_state['industry']}_market_report.txt",
