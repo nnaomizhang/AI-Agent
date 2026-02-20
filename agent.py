@@ -188,6 +188,9 @@ else:
 
 if "report" in st.session_state:
        st.markdown(st.session_state["report"])
+       lines = report.split("\n", 1) 
+       title = lines[0].replace("#", "").strip()  
+       body = lines[1] if len(lines) > 1 else ""
       
        # Word count check
        word_count = len(st.session_state["report"].split())
