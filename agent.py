@@ -18,7 +18,7 @@ st.title("Market Research Assistant")
 st.sidebar.header("Settings")
 st.sidebar.divider() 
 
-# Get API key silently first (not displayed yet)
+# API Key
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 
 temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2)
@@ -29,7 +29,7 @@ model = st.sidebar.selectbox(
 )
 
 if not api_key:
-    api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="password")
+    api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="Password")
 
 llm = ChatOpenAI(
     model=model,
@@ -37,19 +37,18 @@ llm = ChatOpenAI(
     api_key=api_key
 ) if api_key else None
 
-# 1 Validate the Industry
+# 1. Industry Validation
 def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
     text = user_input.strip()
     if llm is None:
-        return False, "", "Missing OpenAI API key."
+        return False, "", "Missing OpenAI API key"
     if not text:
-        return False, "", "Please enter an industry before continuing."
+        return False, "", "Please enter an industry before continuing"
     
-    # Basic empty check first (no need to call LLM)
     if not text:
-        return False, "", "Please enter an industry before continuing."
+        return False, "", "Please enter an industry before continuing"
     
-    # Use LLM to check if input is a real industry
+    # Validating with LLM
     messages = [
         SystemMessage(content="""You are a validation assistant. 
         Determine whether the user input is a real industry/business sector.
@@ -83,12 +82,14 @@ if st.button("Industry Validation"):
     if is_valid:
         st.session_state["industry"] = industry_name
         st.success(message)
-        st.markdown("<p style='color: #FFA500;'>Proceeding to Step 2: Wikipedia Retrieval</p>", unsafe_allow_html=True)
+        st.info("Proceeding to Step 2: Wikipedia Retrieval")
     
     else:
         st.warning(message)
-        st.info("Please update your industry input and try again.")  
+        st.info("Please update your industry input and try again")  
     
 # 2 Wikipedia Retrieval
+
+
 
 # 3 Generate Report
