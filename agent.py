@@ -176,8 +176,6 @@ else:
             )
             st.session_state["report"] = report
 
-report = st.session_state["report"]
-
 if "report" in st.session_state:
     st.markdown(st.session_state["report"]) # crash if no reports existing yet
   
