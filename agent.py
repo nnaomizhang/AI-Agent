@@ -192,8 +192,8 @@ if "report" in st.session_state:
     st.markdown(body)
       
        # Word count check
-       word_count = len(st.session_state["report"].split())
-       if word_count <= 500:
+    word_count = len(st.session_state["report"].split())
+    if word_count <= 500:
            st.caption(f"Word count: {word_count}/500")
-       else:
+    else:
            st.warning(f"Report exceeds 500 words ({word_count} words).")
