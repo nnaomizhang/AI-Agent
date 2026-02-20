@@ -8,7 +8,7 @@ import json
 import os
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
-from langchain.retrievers import WikipediaRetriever
+from langchain_community.retrievers import WikipediaRetriever
 
 retriever = WikipediaRetriever()
 
