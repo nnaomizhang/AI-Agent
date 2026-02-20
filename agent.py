@@ -83,7 +83,7 @@ if st.button("Industry Validation"):
     if is_valid:
         st.session_state["industry"] = industry_name
         st.success(message)
-         st.markdown("<p style='color: #FFA500;'>Proceeding to Step 2: Wikipedia Retrieval</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #FFA500;'>Proceeding to Step 2: Wikipedia Retrieval</p>", unsafe_allow_html=True)
     
     else:
         st.warning(message)
