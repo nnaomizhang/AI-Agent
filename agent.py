@@ -15,7 +15,7 @@ st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
 # Sidebar Settings
-st.sidebar.header("Settings")
+st.sidebar.header("Chatbot Settings")
 
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
 if not api_key:
