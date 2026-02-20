@@ -10,6 +10,9 @@ import re
 st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
+# Initialise client 
+client = anthropic.Anthropic()
+
 # 1 Validate the Industry
 def validate_industry(user_input: str) -> tuple[bool, str]:
     """Use Claude to check if the user provided a valid industry."""
