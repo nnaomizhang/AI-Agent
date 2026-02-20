@@ -9,7 +9,7 @@ retriever = WikipediaRetriever()
 # Page Heading
 st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
-st.caption("This report is based on Wikipedia sources and should be used for preliminary research only")
+st.caption("The following report is based on Wikipedia sources and should be used for preliminary research only")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
