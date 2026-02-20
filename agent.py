@@ -15,18 +15,21 @@ st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
 # Sidebar Settings
-st.sidebar.header("Chatbot Settings")
+st.sidebar.header("Settings")
+st.sidebar.divider() 
 
+# Get API key silently first (not displayed yet)
 api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
-if not api_key:
-    api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="password")
 
 temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2)
 
 model = st.sidebar.selectbox(
     "Model",
-    ["gpt-4o-mini", "gpt-4o"]  
+    ["gpt-4o-mini", "gpt-4o"]
 )
+
+if not api_key:
+    api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="password")
 
 llm = ChatOpenAI(
     model=model,
