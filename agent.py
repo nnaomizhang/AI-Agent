@@ -1,21 +1,19 @@
 import streamlit as st
-import os
-from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_community.retrievers import WikipediaRetriever
+import os # reads the environment variables for the API key
+from langchain_openai import ChatOpenAI # interacts wuth OpenAI's LLM
+from langchain_core.messages import HumanMessage, SystemMessage # prompt structure
+from langchain_community.retrievers import WikipediaRetriever # used for Wikipedia page retrieval 
 
 retriever = WikipediaRetriever()
 
-# Page Layout
+# Page Heading
 st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 st.caption("This report is based on Wikipedia sources and should be used for preliminary research only")
 
 # Sidebar Settings
 st.sidebar.header("Settings")
-
-# API Key
-api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY") # Loads the API Key 
 temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2)
 model = st.sidebar.selectbox(
     "Model",
@@ -25,6 +23,7 @@ model = st.sidebar.selectbox(
 if not api_key:
     api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="password")
 
+# LLM Setup
 llm = ChatOpenAI(
     model=model,
     temperature=temperature,
@@ -32,7 +31,7 @@ llm = ChatOpenAI(
 ) if api_key else None
 
 # 1 Industry Validation
-def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
+def validate_industry_input(user_input: str) -> tuple[bool, str, str]: # returns whether is valid, cleaned industry name and the message
     text = user_input.strip()
     if llm is None:
         return False, "", "Missing OpenAI API key"
@@ -84,7 +83,7 @@ if st.button("Industry Validation"):
 
 def retrieve_wikipedia_pages(industry: str, llm) -> list:
     retriever = WikipediaRetriever(
-        top_k_results=10,       # Giving the filter enough pages to work with
+        top_k_results=10,       # giving the LLM filter enough to find 5 relevant pages
         doc_content_chars_max=10000
     )
     docs = retriever.invoke(industry)
@@ -96,9 +95,9 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
         messages = [
             SystemMessage(content="""You are a relevance checker. 
             Determine if a Wikipedia page is relevant to the given industry.
-            Reply with ONLY 'YES' or 'NO'."""),
+            Reply with ONLY 'YES' or 'NO'."""), # more efficient than keyword matching
             HumanMessage(content=f"Is the Wikipedia page titled '{title}' relevant to the '{industry}' industry?")
-        ]
+        ] 
         response = llm.invoke(messages).content.strip().upper()
         if response.startswith("YES"):
             relevant_docs.append(doc)
@@ -134,12 +133,13 @@ else:
             
 # 3 Industry Report Generation
 
-def generate_industry_report(industry: str, docs: list, llm) -> str:
+def generate_industry_report(industry: str, docs: list, llm) -> str: # combines all Wikipedia page content into one context string -> to LLM
     context = "\n\n".join([
         f"Source: {doc.metadata.get('title', 'Unknown')}\n{doc.page_content}"
         for doc in docs
     ])
     
+    # RAG <- only use information from provided sources
     messages = [
         SystemMessage(content="""You are a professional market research analyst. 
         Generate a concise but COMPLETE industry report based ONLY on the provided Wikipedia sources.
@@ -148,7 +148,7 @@ def generate_industry_report(industry: str, docs: list, llm) -> str:
         - Be STRICTLY under 500 words — plan your response to fit within this limit
         - Be structured with clear sections: Overview, Key Players, Market Trends, Challenges
         - Be written for a business analyst audience
-        - Only use information from the provided sources
+        - Only use information from the provided sources 
         - Budget your words: ~100 words per section to stay under 500 words total"""),
         HumanMessage(content=f"""Industry: {industry}
         
@@ -179,9 +179,8 @@ else:
 report = st.session_state["report"]
 
 if "report" in st.session_state:
-    st.markdown(st.session_state["report"])
+    st.markdown(st.session_state["report"]) # crash if no reports existing yet
   
-      
     word_count = len(st.session_state["report"].split())
     if word_count <= 500:
            st.caption(f"Word count: {word_count}/500")
