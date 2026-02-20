@@ -10,6 +10,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_community.retrievers import WikipediaRetriever
 
+retriever = WikipediaRetriever()
 
 # Page Layout
 st.set_page_config(page_title="Market Research Assistant")
