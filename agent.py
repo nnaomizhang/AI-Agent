@@ -176,18 +176,21 @@ else:
             )
             st.session_state["report"] = report
 
+report = st.session_state["report"]
+
 if "report" in st.session_state:
     st.markdown(st.session_state["report"])
+  
       
     word_count = len(st.session_state["report"].split())
     if word_count <= 500:
            st.caption(f"Word count: {word_count}/500")
     else:
            st.warning(f"Report exceeds 500 words ({word_count} words).")
-           
-    st.download_button(
+
+st.download_button(
         label="Download Report",
-        data="report",
+        data=report,
         file_name=f"{st.session_state['industry']}_market_report.txt",
         mime="text/plain"
-    )
+    )           
