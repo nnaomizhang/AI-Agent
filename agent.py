@@ -192,4 +192,4 @@ if "report" in st.session_state:
         data=report,
         file_name=f"{st.session_state['industry']}_market_report.txt",
         mime="text/plain"
-    )
+)
