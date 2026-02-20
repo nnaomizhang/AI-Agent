@@ -29,7 +29,7 @@ model = st.sidebar.selectbox(
 )
 
 if not api_key:
-    api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="Password")
+    api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="password")
 
 llm = ChatOpenAI(
     model=model,
