@@ -31,27 +31,51 @@ def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
     text = user_input.strip()
     if not text:
         return False, "", "Please enter an industry before continuing."
-    if len(text) < 1:
-        return False, "", "Industry input is too short. Please be more specific."
-    return True, text, "Industry input accepted."
+    
+    # Basic empty check first (no need to call LLM)
+    if not text:
+        return False, "", "Please enter an industry before continuing."
+    
+    # Use LLM to check if input is a real industry
+    messages = [
+        SystemMessage(content="""You are a validation assistant. 
+        Determine if the user input is a legitimate industry or business sector.
+        Reply with ONLY 'YES' or 'NO' followed by a colon and a brief reason.
+        Example: 'YES: Healthcare is a recognised industry.'
+        Example: 'NO: \"blue\" is a color, not an industry.'"""),
+        HumanMessage(content=f"Is this a real industry? '{text}'")
+    ]
+    
+    response = llm.invoke(messages).content.strip()
+    is_valid = response.upper().startswith("YES")
+    reason = response.split(":", 1)[-1].strip() if ":" in response else response
+    
+    if is_valid:
+        return True, text, f"Industry accepted: {reason}"
+    else:
+        return False, "", f"Not recognised as an industry: {reason}"
+    
+# Streamlit
+st.subheader("Step 1: Industry Validation")
 
-
-st.subheader("1. Industry Validation")
 industry_input = st.text_input(
     "Enter the industry you want to research",
-    placeholder="example, Healthcare and Biotech",
+    placeholder="e.g. Healthcare and Biotech",
 )
 
 if st.button("Industry Validation"):
-    is_valid, industry_name, message = validate_industry_input(industry_input)
+    with st.spinner("Validating..."):
+        is_valid, industry_name, message = validate_industry_input(industry_input)
+    
     if is_valid:
         st.session_state["industry"] = industry_name
         st.success(message)
         st.info("Proceeding to Step 2: Wikipedia Retrieval.")
+    
     else:
         st.warning(message)
-        st.info("Please update your industry input and try again.")
-
+        st.info("Please update your industry input and try again.")  
+    
 # 2 Wikipedia Retrieval
 
 # 3 Generate Report
