@@ -119,7 +119,6 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
     return relevant_docs
 
 # Streamlit
-# Streamlit
 st.subheader("Step 2: Wikipedia Retrieval")
 
 if "industry" not in st.session_state:
@@ -133,12 +132,12 @@ else:
     if "docs" in st.session_state:
         docs = st.session_state["docs"]
         if docs:
-            st.success(f"✅ Found {len(docs)} relevant Wikipedia pages:")
+            st.success(f"Here are the {len(docs)} most relevant Wikipedia pages:")
             for i, doc in enumerate(docs, 1):
                 title = doc.metadata.get("title", "Unknown")
                 url = doc.metadata.get("source", "No URL available")
                 st.markdown(f"**{i}. [{title}]({url})**")
+            if len(docs) < 5:
+                st.warning(f"Only {len(docs)} relevant pages were found out of 5. The report may be less comprehensive.")
         else:
-            st.error("❌ No relevant Wikipedia pages found. Try a different industry name.")
-
-
+            st.error("No relevant Wikipedia pages were found. Please try a different industry.")
