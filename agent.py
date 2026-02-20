@@ -52,8 +52,8 @@ def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
     # Use LLM to check if input is a real industry
     messages = [
         SystemMessage(content="""You are a validation assistant. 
-        Determine if the user input is a legitimate industry or business sector.
-        Reply with ONLY 'YES' or 'NO' followed by a colon and a brief reason.
+        Determine whether the user input is a real industry/business sector.
+        Reply with ONLY 'YES' or 'NO' followed by a colon with a brief reason.
         Example: 'YES: Healthcare is a recognised industry.'
         Example: 'NO: \"blue\" is a color, not an industry.'"""),
         HumanMessage(content=f"Is this a real industry? '{text}'")
@@ -83,7 +83,7 @@ if st.button("Industry Validation"):
     if is_valid:
         st.session_state["industry"] = industry_name
         st.success(message)
-        st.info("Proceeding to Step 2: Wikipedia Retrieval.")
+         st.markdown("<p style='color: #FFA500;'>Proceeding to Step 2: Wikipedia Retrieval</p>", unsafe_allow_html=True)
     
     else:
         st.warning(message)
