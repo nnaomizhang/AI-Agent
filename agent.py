@@ -19,10 +19,10 @@ st.sidebar.write(api_key)
 # 1 Validate the Industry
 def validate_industry(user_input: str) -> tuple[bool, str, str]:
     """Use Claude to check if the user provided a valid industry."""
-    if client is None:
+    if api_key is None:
         return False, user_input, "Missing ANTHROPIC_API_KEY."
 
-    response = client.messages.create(
+    response = api_key.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=200,
         messages=[{
