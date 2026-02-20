@@ -7,24 +7,28 @@ import wikipedia
 import re
 import json
 import os
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, SystemMessage
 
 # Page Layout
 st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
 
 # Sidebar Settings
-st.sidebar.header("Settings")
-temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
+api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+if not api_key:
+    api_key = st.sidebar.text_input("Please enter your OpenAI API key", type="password")
+
 model = st.sidebar.selectbox(
     "Model",
-    ["claude-3-5-haiku-latest", "claude-3-5-sonnet-latest"]
+    ["gpt-4o-mini", "gpt-4o"]  
 )
 
-api_key = st.secrets.get("ANTHROPIC_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
-if not api_key:
-    api_key = st.sidebar.text_input("Please enter your Anthropic API key", type="password")
-
-client = anthropic.Anthropic(api_key=api_key) if api_key else None
+llm = ChatOpenAI(
+    model=model,
+    temperature=temperature,
+    api_key=api_key
+) if api_key else None
 
 # 1 Validate the Industry
 def validate_industry_input(user_input: str) -> tuple[bool, str, str]:
