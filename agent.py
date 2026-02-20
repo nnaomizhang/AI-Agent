@@ -112,7 +112,7 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
 st.subheader("Step 2: Wikipedia Retrieval")
 
 if "industry" not in st.session_state:
-    st.warning("Incomplete Step 1: Industry Validation")
+    st.warning("Please complete Step 1: Industry Validation")
 else:
     if st.button("Retrieve Relevant Wikipedia Pages"):
         with st.spinner("Searching Wikipedia..."):
@@ -165,7 +165,7 @@ Write a complete, professional industry report under 500 words.""")
 st.subheader("Step 3: Industry Report")
 
 if "docs" not in st.session_state:
-    st.warning("Incomplete Step 2: Wikipedia Retrieval ")
+    st.warning("Please complete Step 2: Wikipedia Retrieval")
 else:
     if st.button("Generate Industry Report"):
         with st.spinner("Generating report..."):
