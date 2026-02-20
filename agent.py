@@ -187,10 +187,9 @@ else:
             st.session_state["report"] = report
 
 if "report" in st.session_state:
-       st.markdown(st.session_state["report"])
-       lines = report.split("\n", 1) 
-       title = lines[0].replace("#", "").strip()  
-       body = lines[1] if len(lines) > 1 else ""
+    st.markdown(st.session_state["report"])
+    st.markdown(f"<h1 style='font-size: 28px;'>{title}</h1>", unsafe_allow_html=True)
+    st.markdown(body)
       
        # Word count check
        word_count = len(st.session_state["report"].split())
