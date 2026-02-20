@@ -178,6 +178,8 @@ else:
 
 if "report" in st.session_state:
     st.markdown(st.session_state["report"])
+    
+    st.markdown(report)
       
     word_count = len(st.session_state["report"].split())
     if word_count <= 500:
