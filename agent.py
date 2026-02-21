@@ -24,7 +24,7 @@ api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY") # Load
 temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.2)
 model = st.sidebar.selectbox(
     "Model",
-    ["gpt-4o-mini"] # used mini for development, gpt-4o for performance evaluation
+    ["gpt-4o"] # used mini for development, gpt-4o for performance evaluation
 )
 
 if not api_key:
