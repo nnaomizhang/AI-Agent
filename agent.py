@@ -9,12 +9,12 @@ retriever = WikipediaRetriever()
 
 # Download as PDF
 
-        def convert_to_pdf(text: str, industry: str) -> bytes:
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=12)
-            pdf.multi_cell(0, 10, text)
-            return pdf.output(dest="S").encode("latin-1")
+def convert_to_pdf(text: str, industry: str) -> bytes:
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, text)
+    return pdf.output(dest="S").encode("latin-1")
         
 # Page Heading
 st.set_page_config(page_title="Market Research Assistant")
