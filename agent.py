@@ -1,8 +1,9 @@
 import streamlit as st
 import os # reads the environment variables for the API key
-from langchain_openai import ChatOpenAI # interacts wuth OpenAI's LLM
+from langchain_openai import ChatOpenAI # interacts with OpenAI's LLM
 from langchain_core.messages import HumanMessage, SystemMessage # prompt structure
 from langchain_community.retrievers import WikipediaRetriever # used for Wikipedia page retrieval 
+from fpdf import FPDF # downloads as PDF format
 
 retriever = WikipediaRetriever()
 
@@ -58,7 +59,7 @@ def validate_industry_input(user_input: str) -> tuple[bool, str, str]: # returns
     else:
         return False, "", f"Not recognised as an industry: {reason}"
     
-# Streamlit
+# Streamlit UI
 st.subheader("Step 1: Industry Validation")
 
 industry_input = st.text_input(
@@ -107,7 +108,7 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
     
     return relevant_docs
 
-# Streamlit
+# Streamlit UI
 st.subheader("Step 2: Wikipedia Retrieval")
 
 if "industry" not in st.session_state:
@@ -139,12 +140,12 @@ def generate_industry_report(industry: str, docs: list, llm) -> str: # combines 
         for doc in docs
     ])
     
-    # RAG <- only use information from provided sources
+    # RAG (only use information from provided source)
     messages = [
         SystemMessage(content="""You are a professional market research analyst. 
-        Generate a concise but COMPLETE industry report based ONLY on the provided Wikipedia sources.
+        Generate a comprehensive and complete industry report based ONLY on the provided Wikipedia sources.
         The report must:
-        - Be a full, complete report — do not cut off mid-sentence or leave sections incomplete
+        - Be a full, complete report — do not cut off mid-sentence or leave incomplete
         - Be STRICTLY under 500 words — plan your response to fit within this limit
         - Be structured with clear sections: Overview, Key Players, Market Trends, Challenges
         - Be written for a business analyst audience
@@ -161,7 +162,7 @@ Write a complete, professional industry report under 500 words.""")
     response = llm.invoke(messages).content.strip()
     return response
 
-# Streamlit
+# Streamlit UI
 st.subheader("Step 3: Industry Report")
 
 if "docs" not in st.session_state:
@@ -177,7 +178,7 @@ else:
             st.session_state["report"] = report
 
     if "report" in st.session_state:
-        st.markdown(st.session_state["report"]) # crash if no reports existing yet
+        st.markdown(st.session_state["report"]) # will crash if no report exist
   
         word_count = len(st.session_state["report"].split())
         if word_count <= 500:
@@ -185,9 +186,20 @@ else:
         else:
             st.warning(f"Report exceeds 500 words ({word_count} words).")
 
-        st.download_button(
-            label="Download Report",
-            data=st.session_state["report"],
-            file_name=f"{st.session_state['industry']}_market_report.txt",
-            mime="text/plain"
-        )
+# Download as PDF
+
+ def convert_to_pdf(text: str, industry: str) -> bytes:
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, text)
+    return pdf.output(dest="S").encode("latin-1")
+
+# In your Streamlit section:
+pdf_data = convert_to_pdf(report, st.session_state["industry"])
+st.download_button(
+    label="Download Report as PDF",
+    data=pdf_data,
+    file_name=f"{st.session_state['industry']}_market_report.pdf",
+    mime="application/pdf"
+)   
