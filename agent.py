@@ -100,7 +100,7 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
         top_k_results=10,       # giving the LLM filter enough to find 5 relevant pages
         doc_content_chars_max=10000
     )
-    docs = retriever.invoke(industry)
+    docs = retriever.invoke(english_industry)
     
     # Filter for relevance using LLM
     relevant_docs = []
