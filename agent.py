@@ -188,7 +188,7 @@ else:
 
 # Download as PDF
 
- def convert_to_pdf(text: str, industry: str) -> bytes:
+def convert_to_pdf(text: str, industry: str) -> bytes:
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
