@@ -12,7 +12,7 @@ retriever = WikipediaRetriever()
 def convert_to_pdf(text: str) -> bytes:
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Times New Roman", size=10)
+    pdf.set_font("Times", size=10)
     pdf.multi_cell(0, 10, text)
     return pdf.output(dest="S").encode("latin-1")
         
