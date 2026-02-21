@@ -97,8 +97,8 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
     Example: 'Automobilindustrie' → 'Automotive industry'
     Example: 'Auto-industrie' → 'Automotive industry'"""),
     HumanMessage(content=f"Translate to English: '{industry}'")
+    ]
 
-    
      # Translate industry to English first
     messages = [
         SystemMessage(content="You are a translation assistant. Translate the following industry name to English. Reply with ONLY the English translation, nothing else."),
