@@ -7,6 +7,15 @@ from fpdf import FPDF # downloads as PDF format
 
 retriever = WikipediaRetriever()
 
+# Download as PDF
+
+        def convert_to_pdf(text: str, industry: str) -> bytes:
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial", size=12)
+            pdf.multi_cell(0, 10, text)
+            return pdf.output(dest="S").encode("latin-1")
+        
 # Page Heading
 st.set_page_config(page_title="Market Research Assistant")
 st.title("Market Research Assistant")
@@ -185,15 +194,6 @@ else:
             st.caption(f"Word count: {word_count}/500")
         else:
             st.warning(f"Report exceeds 500 words ({word_count} words).")
-
-# Download as PDF
-
-        def convert_to_pdf(text: str, industry: str) -> bytes:
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font("Arial", size=12)
-            pdf.multi_cell(0, 10, text)
-            return pdf.output(dest="S").encode("latin-1")
 
 # Streamlit UI
 
