@@ -5,10 +5,7 @@ from langchain_core.messages import HumanMessage, SystemMessage # prompt structu
 from langchain_community.retrievers import WikipediaRetriever # used for Wikipedia page retrieval 
 from fpdf import FPDF # downloads as PDF format
 
-retriever = WikipediaRetriever()
-
 # Download as PDF
-
 def convert_to_pdf(text: str) -> bytes:
     pdf = FPDF()
     pdf.add_page()
@@ -90,8 +87,15 @@ if st.button("Industry Validation"):
         st.info("Please update your industry input and try again")  
     
 # 2 Wikipedia Retrieval
-
 def retrieve_wikipedia_pages(industry: str, llm) -> list:
+    
+     # Translate industry to English first
+    messages = [
+        SystemMessage(content="You are a translation assistant. Translate the following industry name to English. Reply with ONLY the English translation, nothing else."),
+        HumanMessage(content=f"Translate to English: '{industry}'")
+    ]
+    english_industry = llm.invoke(messages).content.strip()
+    
     retriever = WikipediaRetriever(
         top_k_results=10,       # giving the LLM filter enough to find 5 relevant pages
         doc_content_chars_max=10000
@@ -142,7 +146,6 @@ else:
             st.error("No relevant Wikipedia pages were found. Please try a different industry.")
             
 # 3 Industry Report Generation
-
 def generate_industry_report(industry: str, docs: list, llm) -> str: # combines all Wikipedia page content into one context string -> to LLM
     context = "\n\n".join([
         f"Source: {doc.metadata.get('title', 'Unknown')}\n{doc.page_content}"
@@ -196,7 +199,6 @@ else:
             st.warning(f"Report exceeds 500 words ({word_count} words).")
 
 # Streamlit UI
-
         report = st.session_state["report"]
         pdf_data = convert_to_pdf(report)
         st.download_button(
