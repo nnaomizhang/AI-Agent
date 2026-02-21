@@ -9,10 +9,10 @@ retriever = WikipediaRetriever()
 
 # Download as PDF
 
-def convert_to_pdf(text: str, industry: str) -> bytes:
+def convert_to_pdf(text: str) -> bytes:
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
+    pdf.set_font("Times New Roman", size=10)
     pdf.multi_cell(0, 10, text)
     return pdf.output(dest="S").encode("latin-1")
         
@@ -197,10 +197,11 @@ else:
 
 # Streamlit UI
 
-        pdf_data = convert_to_pdf(report, st.session_state["industry"])
+        report = st.session_state["report"]
+        pdf_data = convert_to_pdf(report)
         st.download_button(
             label="Download Report as PDF",
             data=pdf_data,
             file_name=f"{st.session_state['industry']}_market_report.pdf",
             mime="application/pdf"
-        )   
+        ) 
