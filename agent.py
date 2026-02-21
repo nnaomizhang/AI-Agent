@@ -87,7 +87,9 @@ if st.button("Industry Validation"):
         st.info("Please update your industry input and try again")  
     
 # 2 Wikipedia Retrieval
-messages = [
+def retrieve_wikipedia_pages(industry: str, llm) -> list:
+    
+    messages = [
     SystemMessage(content="""You are a translation assistant. 
     Translate the following industry name to English.
     Return a clear, general industry search term suitable for Wikipedia.
@@ -95,9 +97,7 @@ messages = [
     Example: 'Automobilindustrie' → 'Automotive industry'
     Example: 'Auto-industrie' → 'Automotive industry'"""),
     HumanMessage(content=f"Translate to English: '{industry}'")
-]
 
-def retrieve_wikipedia_pages(industry: str, llm) -> list:
     
      # Translate industry to English first
     messages = [
