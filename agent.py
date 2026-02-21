@@ -89,28 +89,26 @@ if st.button("Industry Validation"):
 # 2 Wikipedia Retrieval
 def retrieve_wikipedia_pages(industry: str, llm) -> list:
     
+    # Translate industry to English first
     messages = [
-    SystemMessage(content="""You are a translation assistant. 
-    Translate the following industry name to English.
-    Return a clear, general industry search term suitable for Wikipedia.
-    Reply with ONLY the English translation, nothing else.
-    Example: 'Automobilindustrie' → 'Automotive industry'
-    Example: 'Auto-industrie' → 'Automotive industry'"""),
-    HumanMessage(content=f"Translate to English: '{industry}'")
-    ]
-
-     # Translate industry to English first
-    messages = [
-        SystemMessage(content="You are a translation assistant. Translate the following industry name to English. Reply with ONLY the English translation, nothing else."),
+        SystemMessage(content="""You are a translation assistant. 
+        Translate the following industry name to English.
+        Return a clear, general industry search term suitable for Wikipedia.
+        Reply with ONLY the English translation, nothing else.
+        Example: 'Automobilindustrie' → 'Automotive industry'
+        Example: 'Auto-industrie' → 'Automotive industry'"""),
         HumanMessage(content=f"Translate to English: '{industry}'")
     ]
     english_industry = llm.invoke(messages).content.strip()
     
+    # Append "industry" to guide Wikipedia search to broader pages
+    search_term = f"{english_industry} industry overview"
+    
     retriever = WikipediaRetriever(
-        top_k_results=10,       # giving the LLM filter enough to find 5 relevant pages
+        top_k_results=10,
         doc_content_chars_max=10000
     )
-    docs = retriever.invoke(english_industry)
+    docs = retriever.invoke(search_term)
     
     # Filter for relevance using LLM
     relevant_docs = []
@@ -119,14 +117,14 @@ def retrieve_wikipedia_pages(industry: str, llm) -> list:
         messages = [
             SystemMessage(content="""You are a relevance checker. 
             Determine if a Wikipedia page is relevant to the given industry.
-            Reply with ONLY 'YES' or 'NO'."""), # more efficient than keyword matching
-            HumanMessage(content=f"Is the Wikipedia page titled '{title}' relevant to the '{industry}' industry?")
-        ] 
+            Reply with ONLY 'YES' or 'NO'."""),
+            HumanMessage(content=f"Is the Wikipedia page titled '{title}' relevant to the '{english_industry}' industry?")
+        ]
         response = llm.invoke(messages).content.strip().upper()
         if response.startswith("YES"):
             relevant_docs.append(doc)
         
-        if len(relevant_docs) == 5:   # stop once we have 5 relevant pages
+        if len(relevant_docs) == 5:
             break
     
     return relevant_docs
